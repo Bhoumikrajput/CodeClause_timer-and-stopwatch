@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Timer and Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .timer,
+        .stopwatch {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            width: 50%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .timer input[type="number"],
+        .stopwatch input[type="number"] {
+            font-size: 16px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+            width: 100%;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        p {
+            font-size: 20px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Timer and Stopwatch</h1>
+
+    <div class="timer">
+        <label>Set timer (minutes):</label>
+        <input type="number" id="timer-input">
+        <button type="button" onclick="startTimer()">Start</button>
+        <p id="timer-output"></p>
+    </div>
+
+    <div class="stopwatch">
+        <label>Stopwatch:</label>
+        <button type="button" onclick="startStopwatch()">Start</button>
+        <button type="button" onclick="stopStopwatch()">Stop</button>
+        <button type="button" onclick="resetStopwatch()">Reset</button>
+        <p id="stopwatch-output">00:00:00</p>
+    </div>
+
+    <script>
+        let timerInterval;
+        let stopwatchInterval;
+        let stopwatchStartTime;
+        let stopwatchRunning = false;
+
+        function startTimer() {
+            const timerInput = document.getElementById('timer-input').value;
+            const timerOutput = document.getElementById('timer-output');
+            let secondsLeft = timerInput * 60;
+
+            timerInterval = setInterval(function () {
+                if (secondsLeft > 0) {
+                    secondsLeft--;
+                    const minutes = Math.floor(secondsLeft / 60);
+                    const seconds = secondsLeft % 60;
+                    timerOutput.innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    clearInterval(timerInterval);
+                    timerOutput.innerHTML = "Time's up!";
+                }
+            }, 1000);
+        }
+        function startStopwatch() {
+            if (!stopwatchRunning) {
+                stopwatchStartTime = Date.now();
+                stopwatchInterval = setInterval(updateStopwatch, 10);
+                stopwatchRunning = true;
+            }
+        }
+
+        function updateStopwatch() {
+            const stopwatchOutput = document.getElementById('stopwatch-output');
+            const elapsedTime = Date.now() - stopwatchStartTime;
+            const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+            const milliseconds = Math.floor((elapsedTime % 1000) / 10);
+            stopwatchOutput.innerHTML = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopStopwatch() {
+            if (stopwatchRunning) {
+                clearInterval(stopwatchInterval);
+                stopwatchRunning = false;
+            }
+        }
+
+        function resetStopwatch() {
+            stopStopwatch();
+            const stopwatchOutput = document.getElementById('stopwatch-output');
+            stopwatchOutput.innerHTML = "00:00:00";
+        }
+    </script>
+
+</body>
+
+</html>
